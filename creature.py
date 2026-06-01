@@ -1,6 +1,8 @@
 import math
 import random
 
+import pygame
+
 from config import (
     WIDTH,
     HEIGHT,
@@ -266,144 +268,67 @@ class Creature:
     # -----------------------------
     # DRAW
     # -----------------------------
-    def draw(self, canvas):
+    def draw(self, surface):
 
         body_length = 24
         body_width = 24
 
-        dx = math.cos(
-            self.heading
-        )
-
-        dy = math.sin(
-            self.heading
-        )
+        dx = math.cos(self.heading)
+        dy = math.sin(self.heading)
 
         px = -dy
         py = dx
 
-        cx = self.x
-        cy = self.y
+        cx = int(self.x)
+        cy = int(self.y)
 
         # body
-        canvas.create_oval(
-            cx - body_length / 2,
-            cy - body_width / 2,
-            cx + body_length / 2,
-            cy + body_width / 2,
-            fill="#DDEEFF",
-            outline=""
+        pygame.draw.ellipse(
+            surface,
+            (221, 238, 255),
+            (
+                cx - body_length / 2,
+                cy - body_width / 2,
+                body_length,
+                body_width,
+            ),
         )
 
-        # -------------------------
-        # EYES
-        # -------------------------
+        # eyes
         eye_forward = 6
         eye_side = 4
         eye_radius = 2
 
-        left_eye_x = (
-            cx +
-            dx * eye_forward +
-            px * eye_side
+        left_eye = (
+            int(cx + dx * eye_forward + px * eye_side),
+            int(cy + dy * eye_forward + py * eye_side),
+        )
+        right_eye = (
+            int(cx + dx * eye_forward - px * eye_side),
+            int(cy + dy * eye_forward - py * eye_side),
         )
 
-        left_eye_y = (
-            cy +
-            dy * eye_forward +
-            py * eye_side
-        )
+        pygame.draw.circle(surface, (0, 0, 0), left_eye, eye_radius)
+        pygame.draw.circle(surface, (0, 0, 0), right_eye, eye_radius)
 
-        right_eye_x = (
-            cx +
-            dx * eye_forward -
-            px * eye_side
-        )
-
-        right_eye_y = (
-            cy +
-            dy * eye_forward -
-            py * eye_side
-        )
-
-        canvas.create_oval(
-            left_eye_x - eye_radius,
-            left_eye_y - eye_radius,
-            left_eye_x + eye_radius,
-            left_eye_y + eye_radius,
-            fill="black"
-        )
-
-        canvas.create_oval(
-            right_eye_x - eye_radius,
-            right_eye_y - eye_radius,
-            right_eye_x + eye_radius,
-            right_eye_y + eye_radius,
-            fill="black"
-        )
-
-        # -------------------------
-        # ANTENNAE
-        # -------------------------
-        front_x = (
-            cx +
-            dx * body_length / 2
-        )
-
-        front_y = (
-            cy +
-            dy * body_length / 2
-        )
+        # antennae
+        front_x = cx + dx * body_length / 2
+        front_y = cy + dy * body_length / 2
 
         antenna_length = 10
         spread = 5
 
-        # left antenna
-        ax1 = front_x + px * spread
-        ay1 = front_y + py * spread
-
-        ax2 = (
-            ax1 +
-            dx * antenna_length +
-            px * 4
+        left_base = (front_x + px * spread, front_y + py * spread)
+        left_tip = (
+            left_base[0] + dx * antenna_length + px * 4,
+            left_base[1] + dy * antenna_length + py * 4,
         )
 
-        ay2 = (
-            ay1 +
-            dy * antenna_length +
-            py * 4
+        right_base = (front_x - px * spread, front_y - py * spread)
+        right_tip = (
+            right_base[0] + dx * antenna_length - px * 4,
+            right_base[1] + dy * antenna_length - py * 4,
         )
 
-        # right antenna
-        bx1 = front_x - px * spread
-        by1 = front_y - py * spread
-
-        bx2 = (
-            bx1 +
-            dx * antenna_length -
-            px * 4
-        )
-
-        by2 = (
-            by1 +
-            dy * antenna_length -
-            py * 4
-        )
-
-        canvas.create_line(
-            ax1,
-            ay1,
-            ax2,
-            ay2,
-            fill="white",
-            width=2
-        )
-
-        canvas.create_line(
-            bx1,
-            by1,
-            bx2,
-            by2,
-            fill="white",
-            width=2
-        )
+        pygame.draw.line(surface, (255, 255, 255), left_base, left_tip, 2)
+        pygame.draw.line(surface, (255, 255, 255), right_base, right_tip, 2)

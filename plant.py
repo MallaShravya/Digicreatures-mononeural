@@ -1,6 +1,16 @@
 import random
 
+import pygame
+
 from config import PLANT_COLOR
+
+
+def _hex_rgb(hex_color):
+    h = hex_color.lstrip("#")
+    return tuple(int(h[i : i + 2], 16) for i in (0, 2, 4))
+
+
+_PLANT_RGB = _hex_rgb(PLANT_COLOR)
 
 
 class Plant:
@@ -23,15 +33,13 @@ class Plant:
     # -----------------------------
     # DRAW
     # -----------------------------
-    def draw(self, canvas):
+    def draw(self, surface):
 
-        r = self.radius()
+        r = int(self.radius())
 
-        canvas.create_oval(
-            self.x - r,
-            self.y - r,
-            self.x + r,
-            self.y + r,
-            fill=PLANT_COLOR,
-            outline=""
+        pygame.draw.circle(
+            surface,
+            _PLANT_RGB,
+            (int(self.x), int(self.y)),
+            r,
         )
