@@ -1,0 +1,18 @@
+# ---------------------------------
+# CONFIG
+# ---------------------------------
+WIDTH = 1000
+HEIGHT = 700
+
+NUM_CREATURES = 50
+NUM_PLANTS = 24
+
+CREATURE_SPEED = 2.5
+TURN_SPEED = 0.08
+
+CREATURE_RADIUS = 12
+
+BACKGROUND = "#14141E"
+PLANT_COLOR = "#33DD55"
+
+UPDATE_DELAY = 16  # ~60 FPS
