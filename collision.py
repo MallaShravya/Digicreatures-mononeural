@@ -7,7 +7,8 @@ def resolve_collisions(creatures):
 
     for i in range(len(creatures)):
 
-        for j in range(i + 1, len(creatures)):
+        for j in range(i + 1,
+                       len(creatures)):
 
             a = creatures[i]
             b = creatures[j]
