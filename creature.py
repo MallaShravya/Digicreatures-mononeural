@@ -55,13 +55,89 @@ class Creature:
         return angle
 
     # -----------------------------
+    # SMELL BLOCKING
+    # -----------------------------
+    def smell_blocked(
+        self,
+        plant,
+        creatures
+    ):
+
+        ax = self.x
+        ay = self.y
+
+        px = plant.x
+        py = plant.y
+
+        line_dx = px - ax
+        line_dy = py - ay
+
+        line_length = math.sqrt(
+            line_dx * line_dx +
+            line_dy * line_dy
+        )
+
+        if line_length == 0:
+            return False
+
+        for other in creatures:
+
+            if other is self:
+                continue
+
+            bx = other.x
+            by = other.y
+
+            dx = bx - ax
+            dy = by - ay
+
+            t = (
+                dx * line_dx +
+                dy * line_dy
+            ) / (
+                line_length * line_length
+            )
+
+            if 0 < t < 1:
+
+                closest_x = (
+                    ax + t * line_dx
+                )
+
+                closest_y = (
+                    ay + t * line_dy
+                )
+
+                dist_to_line = math.sqrt(
+                    (bx - closest_x) ** 2 +
+                    (by - closest_y) ** 2
+                )
+
+                if dist_to_line < (
+                    CREATURE_RADIUS * 1.5
+                ):
+                    return True
+
+        return False
+
+    # -----------------------------
     # SENSOR
     # -----------------------------
-    def sense(self, plants):
+    def sense(
+        self,
+        plants,
+        creatures
+    ):
 
         observations = []
 
         for plant in plants:
+
+            if self.smell_blocked(
+                plant,
+                creatures
+            ):
+                continue
 
             observations.append(
                 (
@@ -86,8 +162,6 @@ class Creature:
         nearest_dy = 0.0
         nearest_plant = None
 
-        # EXACTLY the same target choice
-        # as the original implementation:
         # choose nearest plant
         for dx, dy, plant in observations:
 
@@ -133,7 +207,8 @@ class Creature:
     ):
 
         observations = self.sense(
-            plants
+            plants,
+            creatures
         )
 
         (
